@@ -1,0 +1,36 @@
+
+name: Build TripleTotem
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Install Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.1.0'
+
+      - name: Extract and build plugin
+        run: |
+          unzip -q TripleTotem-source.zip
+          cd TripleTotem
+          gradle build
+
+      - name: Upload plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: TripleTotem
+          path: TripleTotem/build/libs/TripleTotem-1.0.0.jar
